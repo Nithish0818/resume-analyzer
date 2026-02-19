@@ -3,7 +3,7 @@ from datetime import datetime
 
 import google.generativeai as genai
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.security import HTTPBearer
 from firebase import get_auth, get_db
 from pydantic import BaseModel
@@ -55,15 +55,15 @@ async def login(email: str, password: str):
         return {"error": "Invalid credentials"}
 
 
-async def verify_firebase_token(credentials=Depends(security)):
-    token = credentials.credentials
-    print(f"🔍 TOKEN LENGTH: {len(token)}")
-    print(f"🔍 TOKEN START: {token[:20]}...")
-    print(f"🔍 TOKEN END: ...{token[-20:]}")
+# async def verify_firebase_token(credentials=Depends(security)):
+#     token = credentials.credentials
+#     print(f"🔍 TOKEN LENGTH: {len(token)}")
+#     print(f"🔍 TOKEN START: {token[:20]}...")
+#     print(f"🔍 TOKEN END: ...{token[-20:]}")
 
-    # TEMP: Accept ANY token for 5 mins
-    print("🔓 DEBUG: Bypassing token check")
-    return {"uid": "debug-wk2C98jDMuWpvbIKQEnE7BCxNfQ2"}
+#     # TEMP: Accept ANY token for 5 mins
+#     print("🔓 DEBUG: Bypassing token check")
+#     return {"uid": "debug-wk2C98jDMuWpvbIKQEnE7BCxNfQ2"}
 
 
 @app.get("/")
@@ -169,10 +169,12 @@ async def health():
 #     }
 
 
+# @app.post("/analyse-resume")
+# async def analyse_resume(
+#     file: UploadFile = File(...), user=Depends(verify_firebase_token)
+# ):
 @app.post("/analyse-resume")
-async def analyse_resume(
-    file: UploadFile = File(...), user=Depends(verify_firebase_token)
-):
+async def analyse_resume(file: UploadFile = File(...)):
     import json
     import os
 
