@@ -33,6 +33,7 @@ class Analysis(BaseModel):
 async def register(email: str, password: str):
     try:
         auth_client = get_auth()
+        print("auth_client : ", auth_client)
         user = auth_client.create_user(email=email, password=password)
         return {"user_id": user.uid, "email": user.email, "message": "User created"}
     except Exception as e:
