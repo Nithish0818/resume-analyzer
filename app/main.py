@@ -286,8 +286,8 @@ async def analyse_resume(file: UploadFile = File(...)):
 
     # SAVE TO FIRESTORE (YOUR WORKING CODE)
     try:
-        uid = user["uid"]
-        db_client = get_db()  # Your Firebase function
+        uid = "demo-user-123"  # ← DUMMY UID - NO AUTH NEEDED
+        db_client = get_db()
         user_ref = db_client.child(f"users/{uid}/analyses")
         analysis_id = user_ref.push(analysis)
 
@@ -297,14 +297,8 @@ async def analyse_resume(file: UploadFile = File(...)):
             "data": analysis,
             "firebase_path": f"users/{uid}/analyses/{analysis_id.key}",
         }
-    except Exception as firebase_error:
-        print(f"🔥 FIREBASE ERROR: {firebase_error}")
-        # Return analysis even if Firebase fails
-        return {
-            "success": False,
-            "firebase_error": str(firebase_error),
-            "data": analysis,
-        }
+    except Exception:
+        return {"success": False, "data": analysis}
 
 
 if __name__ == "__main__":
