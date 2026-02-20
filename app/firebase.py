@@ -1,7 +1,7 @@
 import os
 
 import firebase_admin
-from firebase_admin import auth, credentials, db
+from firebase_admin import auth, credentials, db,initialize_app
 
 _firebase_app = None
 
@@ -41,8 +41,21 @@ def init_firebase():
 
 
 def get_db():
-    init_firebase()
-    return db.reference()
+    cred = credentials.Certificate(
+        {
+            "type": "service_account",
+            "project_id": os.getenv("FIREBASE_PROJECT_ID"),
+            "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
+            "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+        }
+    )
+    initialize_app(
+        cred,
+        {
+            "databaseURL": f'https://{os.getenv("FIREBASE_PROJECT_ID")}-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        },
+    )
+    return db
 
 
 def get_auth():
